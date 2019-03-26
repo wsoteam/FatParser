@@ -30,34 +30,13 @@ public class FatParser extends AppCompatActivity {
         new AsyncLoad().execute();
     }
 
-    private ArrayList<String> getTitles(String url){
-        ArrayList<String> titlesOwners = new ArrayList<>();
-        try {
-            Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
-            Elements elements = doc.select("h2");
-            for (int i = 0; i < elements.size(); i++) {
-                titlesOwners.add(elements.get(i).html().split("\"")[3]);
-                Log.e("LOL", titlesOwners.get(i));
-            }
 
-            Log.e("LOL", "fin");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return titlesOwners;
-    }
 
     public static class AsyncLoad extends AsyncTask<Void, Void, ArrayList<ItemOfGlobalBase>> {
         @Override
         protected ArrayList<ItemOfGlobalBase> doInBackground(Void... voids) {
-
-            try {
-
-
-                return null;
-            } catch (Exception e) {
-                return null;
-            }
+            getTitles(url);
+            return null;
 
         }
 
@@ -65,7 +44,22 @@ public class FatParser extends AppCompatActivity {
         protected void onPostExecute(ArrayList<ItemOfGlobalBase> globalBases) {
             super.onPostExecute(globalBases);
         }
+        private ArrayList<String> getTitles(String url){
+            ArrayList<String> titlesOwners = new ArrayList<>();
+            try {
+                Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
+                Elements elements = doc.select("h2");
+                for (int i = 0; i < elements.size(); i++) {
+                    titlesOwners.add(elements.get(i).html().split("\"")[3]);
+                    Log.e("LOL", titlesOwners.get(i));
+                }
 
+                Log.e("LOL", "fin");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return titlesOwners;
+        }
 
     }
 }
