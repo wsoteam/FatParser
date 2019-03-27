@@ -34,7 +34,7 @@ public class FatParser extends AppCompatActivity {
     public static class AsyncLoad extends AsyncTask<Void, Void, ArrayList<ItemOfGlobalBase>> {
         @Override
         protected ArrayList<ItemOfGlobalBase> doInBackground(Void... voids) {
-            getURLsOneLetter("А");
+            getTitles(getURLsOneLetter("А"));
             return null;
 
         }
@@ -44,17 +44,21 @@ public class FatParser extends AppCompatActivity {
             super.onPostExecute(globalBases);
         }
 
-        private ArrayList<String> getTitles(String url) {
+        private ArrayList<String> getTitles(ArrayList<String> urls) {
             ArrayList<String> titlesOwners = new ArrayList<>();
             try {
-                Document doc = Jsoup.connect(url).userAgent(USER_AGENT).get();
-                Elements elements = doc.select("h2");
-                for (int i = 0; i < elements.size(); i++) {
-                    titlesOwners.add(elements.get(i).html().split("\"")[3]);
-                    Log.e("LOL", titlesOwners.get(i));
+                for (int i = 0; i < urls.size(); i++) {
+                    Document doc = Jsoup.connect(urls.get(i)).userAgent(USER_AGENT).get();
+                    Elements elements = doc.select("h2");
+                    for (int j = 0; j < elements.size(); j++) {
+                        titlesOwners.add(elements.get(j).html().split("\"")[3]);
+                        //Log.e("LOL", String.valueOf(j) + " - " + titlesOwners.get(j));
+                    }
                 }
 
-                Log.e("LOL", "fin");
+                for (int i = 0; i < titlesOwners.size(); i++) {
+                    Log.e("LOL", String.valueOf(i) + " - " + titlesOwners.get(i));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
