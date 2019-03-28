@@ -146,10 +146,11 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             String url = "https://www.fatsecret.ru/калории-питание/общий/ПП-Панкейки";
             String url1 = "https://www.fatsecret.ru/калории-питание/zatecky-gus/Пиво/100мл";
+            String url3 = "https://www.fatsecret.ru/калории-питание/aasa/Молоко/100г";
             String url2 = "https://www.fatsecret.ru/%D0%BA%D0%B0%D0%BB%D0%BE%D1%80%D0%B8%D0%B8-%D0%BF%D0%B8%D1%82%D0%B0%D0%BD%D0%B8%D0%B5/%D0%BE%D0%B1%D1%89%D0%B8%D0%B9/%D0%A2%D0%BE%D1%80%D1%82?portionid=52579&portionamount=100,000";
 
             try {
-                Document doc = Jsoup.connect(url1).userAgent(USER_AGENT).get();
+                Document doc = Jsoup.connect(url3).userAgent(USER_AGENT).get();
                 if (isTypicalProduct(doc)) {
                     getFood(doc);
                 }
@@ -181,10 +182,23 @@ public class FatParser extends AppCompatActivity {
             String percentFats;
             String percentProteins;
 
-            //Elements manufacture = doc.select("h2").select("a");
-            Elements titles = doc.select("h1").select("a");
-            //Log.e("LOL", manufacture.html());
-            Log.e("LOL", titles.html());
+            Elements manufacture = doc.select("h2").select("a");
+            Elements titles = doc.select("h1");
+
+            food.setName(titles.html());
+            food.setBrend(manufacture.html());
+
+            Elements percent = doc.select("div.small");
+            String htmlCarbo = percent.get(1).select("div").html().split("\"")[2];
+            food.setPercentCarbohydrates(htmlCarbo.substring(htmlCarbo.indexOf("(") + 1, htmlCarbo.indexOf(")")));
+
+            String htmlFats = percent.get(1).select("div").html().split("\"")[4];
+            food.setPercentFats(htmlFats.substring(htmlFats.indexOf("(") + 1, htmlFats.indexOf(")")));
+
+
+            String htmlProt = percent.get(1).select("div").html().split("\"")[6];
+            food.setPercentFats(htmlProt.substring(htmlProt.indexOf("(") + 1, htmlProt.indexOf(")")));
+            Log.e("LOL", htmlProt.substring(htmlProt.indexOf("(") + 1, htmlProt.indexOf(")")));
 
             Elements elements = doc.select("div.nutpanel");
             Elements elementRows = elements.get(0).select("tr");
@@ -194,57 +208,57 @@ public class FatParser extends AppCompatActivity {
             food.setCalories(elementRows.get(5).select("td").get(1).select("b").html());
 
             for (int i = 6; i < elementRows.size(); i++) {
-                if (elementRows.get(i).html().contains(proteins)){
+                if (elementRows.get(i).html().contains(proteins)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setProteins(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(carbohydrates)){
+                if (elementRows.get(i).html().contains(carbohydrates)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setCarbohydrates(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(sugar)){
+                if (elementRows.get(i).html().contains(sugar)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setSugar(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(fats)){
+                if (elementRows.get(i).html().contains(fats)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setFats(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(saturatedFats)){
+                if (elementRows.get(i).html().contains(saturatedFats)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(monoUnSaturatedFats)){
+                if (elementRows.get(i).html().contains(monoUnSaturatedFats)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setMonoUnSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(polyUnSaturatedFats)){
+                if (elementRows.get(i).html().contains(polyUnSaturatedFats)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setPolyUnSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(cholesterol)){
+                if (elementRows.get(i).html().contains(cholesterol)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setCholesterol(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(cellulose)){
+                if (elementRows.get(i).html().contains(cellulose)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setCellulose(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(sodium)){
+                if (elementRows.get(i).html().contains(sodium)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setSodium(elementRows.get(i).select("td").get(countTd).html());
                 }
 
-                if (elementRows.get(i).html().contains(pottassium)){
+                if (elementRows.get(i).html().contains(pottassium)) {
                     int countTd = elementRows.get(i).select("td").size() - 1;
                     food.setPottassium(elementRows.get(i).select("td").get(countTd).html());
                 }
