@@ -5,10 +5,10 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.wk.parserdbproducts.POJOs.Food;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -34,9 +34,11 @@ public class FatParser extends AppCompatActivity {
     public static class AsyncLoad extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            ArrayList<String> array = getURLsOneLetter("Б");
+            /*ArrayList<String> array = getURLsOneLetter("Б");
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
-            getProducts(getUrlsPagesListProducts(urlsOwners.get(0)));
+            getProducts(getUrlsPagesListProducts(urlsOwners.get(0)));*/
+
+            getDetailProduct("");
 
             return null;
 
@@ -144,18 +146,120 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             String url = "https://www.fatsecret.ru/калории-питание/общий/ПП-Панкейки";
             String url1 = "https://www.fatsecret.ru/калории-питание/zatecky-gus/Пиво/100мл";
-            String url2 = "https://www.fatsecret.ru/калории-питание/общий/Торт";
+            String url2 = "https://www.fatsecret.ru/%D0%BA%D0%B0%D0%BB%D0%BE%D1%80%D0%B8%D0%B8-%D0%BF%D0%B8%D1%82%D0%B0%D0%BD%D0%B8%D0%B5/%D0%BE%D0%B1%D1%89%D0%B8%D0%B9/%D0%A2%D0%BE%D1%80%D1%82?portionid=52579&portionamount=100,000";
 
             try {
                 Document doc = Jsoup.connect(url1).userAgent(USER_AGENT).get();
-                Elements elements = doc.select("td.label");
+                if (isTypicalProduct(doc)) {
+                    getFood(doc);
+                }
 
-                getCorrectUrl100gramm(doc);
+                //getCorrectUrl100gramm(doc);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
+        }
+
+        private void getFood(Document doc) {
+            Food food = new Food();
+            String proteins = "Белки";
+            String carbohydrates = "Углеводы";
+            String sugar = "Сахар";
+            String fats = "<b>Жиры</b>";
+            String saturatedFats = "Насыщенные Жиры";
+            String monoUnSaturatedFats = "Мононенасыщенные Жиры";
+            String polyUnSaturatedFats = "Полиненасыщенные Жиры";
+            String cholesterol = "Холестерин";
+            String cellulose = "Клетчатка";
+            String sodium = "Натрий";
+            String pottassium = "Калий";
+
+
+            String percentCarbohydrates;
+            String percentFats;
+            String percentProteins;
+
+            //Elements manufacture = doc.select("h2").select("a");
+            Elements titles = doc.select("h1").select("a");
+            //Log.e("LOL", manufacture.html());
+            Log.e("LOL", titles.html());
+
+            Elements elements = doc.select("div.nutpanel");
+            Elements elementRows = elements.get(0).select("tr");
+
+            food.setPortion(elementRows.get(1).select("td").html());
+            food.setKilojoules(elementRows.get(4).select("td").get(1).select("b").html());
+            food.setCalories(elementRows.get(5).select("td").get(1).select("b").html());
+
+            for (int i = 6; i < elementRows.size(); i++) {
+                if (elementRows.get(i).html().contains(proteins)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setProteins(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(carbohydrates)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setCarbohydrates(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(sugar)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setSugar(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(fats)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setFats(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(saturatedFats)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(monoUnSaturatedFats)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setMonoUnSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(polyUnSaturatedFats)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setPolyUnSaturatedFats(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(cholesterol)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setCholesterol(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(cellulose)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setCellulose(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(sodium)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setSodium(elementRows.get(i).select("td").get(countTd).html());
+                }
+
+                if (elementRows.get(i).html().contains(pottassium)){
+                    int countTd = elementRows.get(i).select("td").size() - 1;
+                    food.setPottassium(elementRows.get(i).select("td").get(countTd).html());
+                }
+            }
+
+        }
+
+        private boolean isTypicalProduct(Document doc) {
+            String typicalPhraseWeight = "100 мл", typicalPhraseVolume = "100 г";
+            Elements elements = doc.select("td.label");
+            if (elements.get(0).html().contains(typicalPhraseVolume) || elements.get(0).html().contains(typicalPhraseWeight)) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         private void getCorrectUrl100gramm(Document doc) {
