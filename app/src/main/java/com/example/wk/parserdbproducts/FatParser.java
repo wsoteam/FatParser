@@ -34,12 +34,22 @@ public class FatParser extends AppCompatActivity {
     public static class AsyncLoad extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            /*ArrayList<String> array = getURLsOneLetter("Б");
+            int count = 0;
+            ArrayList<String> array = getURLsOneLetter("Ю");
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
-            getProducts(getUrlsPagesListProducts(urlsOwners.get(0)));*/
+            for (int j = 0; j < urlsOwners.size(); j++) {
+                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)));
 
-            getDetailProduct("");
+                Log.e("LOL", "start");
+                for (int i = 0; i < allDetailUrl.size(); i++) {
+                    getDetailProduct(allDetailUrl.get(i));
+                    count += 1;
+                }
+                Log.e("LOL", "fin - " + String.valueOf(j));
+            }
 
+
+            Log.e("LOL", String.valueOf(count));
             return null;
 
         }
@@ -144,13 +154,8 @@ public class FatParser extends AppCompatActivity {
 
         private void getDetailProduct(String urlPageDetailProducts) {
             ArrayList<String> urlDetailProduct = new ArrayList<>();
-            String url = "https://www.fatsecret.ru/калории-питание/общий/ПП-Панкейки";
-            String url1 = "https://www.fatsecret.ru/калории-питание/zatecky-gus/Пиво/100мл";
-            String url3 = "https://www.fatsecret.ru/калории-питание/aasa/Молоко/100г";
-            String url2 = "https://www.fatsecret.ru/%D0%BA%D0%B0%D0%BB%D0%BE%D1%80%D0%B8%D0%B8-%D0%BF%D0%B8%D1%82%D0%B0%D0%BD%D0%B8%D0%B5/%D0%BE%D0%B1%D1%89%D0%B8%D0%B9/%D0%A2%D0%BE%D1%80%D1%82?portionid=52579&portionamount=100,000";
-
             try {
-                Document doc = Jsoup.connect(url3).userAgent(USER_AGENT).get();
+                Document doc = Jsoup.connect(urlPageDetailProducts).userAgent(USER_AGENT).get();
                 if (isTypicalProduct(doc)) {
                     getFood(doc);
                 }
@@ -165,6 +170,7 @@ public class FatParser extends AppCompatActivity {
 
         private void getFood(Document doc) {
             Food food = new Food();
+
             String proteins = "Белки";
             String carbohydrates = "Углеводы";
             String sugar = "Сахар";
@@ -177,10 +183,6 @@ public class FatParser extends AppCompatActivity {
             String sodium = "Натрий";
             String pottassium = "Калий";
 
-
-            String percentCarbohydrates;
-            String percentFats;
-            String percentProteins;
 
             Elements manufacture = doc.select("h2").select("a");
             Elements titles = doc.select("h1");
@@ -198,7 +200,7 @@ public class FatParser extends AppCompatActivity {
 
             String htmlProt = percent.get(1).select("div").html().split("\"")[6];
             food.setPercentFats(htmlProt.substring(htmlProt.indexOf("(") + 1, htmlProt.indexOf(")")));
-            Log.e("LOL", htmlProt.substring(htmlProt.indexOf("(") + 1, htmlProt.indexOf(")")));
+
 
             Elements elements = doc.select("div.nutpanel");
             Elements elementRows = elements.get(0).select("tr");
