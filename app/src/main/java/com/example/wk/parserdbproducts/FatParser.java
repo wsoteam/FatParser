@@ -8,6 +8,7 @@ import android.util.Log;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class FatParser extends AppCompatActivity {
     static String[] ABC = new String[]{"А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "К", "Л", "М", "Н", "О", "П", "Р", "С",
             "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я", "*"};
     static int size = 0;
+    static ArrayList<String> allTitles = new ArrayList<>();
 
 
     @Override
@@ -32,7 +34,10 @@ public class FatParser extends AppCompatActivity {
     public static class AsyncLoad extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            getProducts("https://www.fatsecret.ru/калории-питание/search?q=Zatecky%20Gus&pg=0");
+            ArrayList<String> array = getURLsOneLetter("Б");
+            ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
+            getProducts(getUrlsPagesListProducts(urlsOwners.get(0)));
+
             return null;
 
         }
@@ -116,20 +121,63 @@ public class FatParser extends AppCompatActivity {
             return urlsPages;
         }
 
-        private ArrayList<String> getProducts(String urlPageProducts) {
+        private ArrayList<String> getProducts(ArrayList<String> urlsPageProducts) {
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             String firstPartUrl = "https://www.fatsecret.ru";
             try {
-                Document doc = Jsoup.connect(urlPageProducts).userAgent(USER_AGENT).get();
-                Elements elements = doc.select("td.borderBottom");
-                for (int i = 0; i < elements.size(); i++) {
-                    urlDetailProduct.add(firstPartUrl+ elements.get(i).html().split("\"")[3]);
-                    Log.e("LOL", firstPartUrl+ elements.get(i).html().split("\"")[3]);
+                for (int j = 0; j < urlsPageProducts.size(); j++) {
+                    Document doc = Jsoup.connect(urlsPageProducts.get(j)).userAgent(USER_AGENT).get();
+                    Elements elements = doc.select("td.borderBottom");
+                    for (int i = 0; i < elements.size(); i++) {
+                        urlDetailProduct.add(firstPartUrl + elements.get(i).html().split("\"")[3]);
+                        Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                    }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return urlDetailProduct;
+        }
+
+        private void getDetailProduct(String urlPageDetailProducts) {
+            ArrayList<String> urlDetailProduct = new ArrayList<>();
+            String url = "https://www.fatsecret.ru/калории-питание/общий/ПП-Панкейки";
+            String url1 = "https://www.fatsecret.ru/калории-питание/zatecky-gus/Пиво/100мл";
+            String url2 = "https://www.fatsecret.ru/калории-питание/общий/Торт";
+
+            try {
+                Document doc = Jsoup.connect(url1).userAgent(USER_AGENT).get();
+                Elements elements = doc.select("td.label");
+
+                getCorrectUrl100gramm(doc);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        private void getCorrectUrl100gramm(Document doc) {
+            String weight = "100 г", volume = "100 мл";
+            Elements elements = doc.select("td.borderBottom");
+            int positionElementWithCorrectURL = -1;
+            for (int i = 0; i < elements.size(); i++) {
+                if (elements.get(i).html().contains(weight) || elements.get(i).html().contains(volume)) {
+                    positionElementWithCorrectURL = i;
+                }
+            }
+            String correctUrl = elements.get(positionElementWithCorrectURL).html().split("\"")[9];
+            Log.e("LOL", correctUrl);
+
+        }
+
+        private String getStringInBrackets(String textInBrackets) {
+            int positionFirstBracket = 0, positionSecondBracket = 0;
+            positionFirstBracket = textInBrackets.indexOf("(") + 1;
+            positionSecondBracket = textInBrackets.indexOf(")");
+
+            return textInBrackets.substring(positionFirstBracket, positionSecondBracket);
         }
 
     }
