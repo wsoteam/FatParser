@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.wk.parserdbproducts.POJOs.AllOwner;
 import com.example.wk.parserdbproducts.POJOs.Food;
+import com.example.wk.parserdbproducts.POJOs.Owner;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -34,22 +38,43 @@ public class FatParser extends AppCompatActivity {
     public static class AsyncLoad extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
+            AllOwner allOwner = new AllOwner();
+            allOwner.setName("OWNERS");
+            /*ArrayList<Owner> owners = new ArrayList<>();
             int count = 0;
             ArrayList<String> array = getURLsOneLetter("Ю");
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
+            Log.e("LOL", String.valueOf(urlsOwners.size()));
+            ArrayList<String> titlesOwners = getTitlesOneLetter(array);
             for (int j = 0; j < urlsOwners.size(); j++) {
-                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)));
+                Owner owner = new Owner();
+                owner.setName(titlesOwners.get(j));
+                owner.setUrl(urlsOwners.get(j));
+                ArrayList<Food> foods = new ArrayList<>();
 
+                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)));
                 Log.e("LOL", "start");
                 for (int i = 0; i < allDetailUrl.size(); i++) {
-                    getDetailProduct(allDetailUrl.get(i));
-                    count += 1;
+                    if (getDetailProduct(allDetailUrl.get(i)) != null) {
+                        foods.add(getDetailProduct(allDetailUrl.get(i)));
+                        count += 1;
+                    }
                 }
                 Log.e("LOL", "fin - " + String.valueOf(j));
+                owner.setFoods(foods);
+                owners.add(owner);
             }
 
+            allOwner.setOwners(owners);*/
 
-            Log.e("LOL", String.valueOf(count));
+
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("GLOBAL");
+
+            //myRef.setValue(allOwner);
+
+
+            //Log.e("LOL", String.valueOf(count));
             return null;
 
         }
@@ -152,12 +177,13 @@ public class FatParser extends AppCompatActivity {
             return urlDetailProduct;
         }
 
-        private void getDetailProduct(String urlPageDetailProducts) {
+        private Food getDetailProduct(String urlPageDetailProducts) {
+            Food food = null;
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             try {
                 Document doc = Jsoup.connect(urlPageDetailProducts).userAgent(USER_AGENT).get();
                 if (isTypicalProduct(doc)) {
-                    getFood(doc);
+                    food = getFood(doc);
                 }
 
                 //getCorrectUrl100gramm(doc);
@@ -166,9 +192,10 @@ public class FatParser extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+            return food;
         }
 
-        private void getFood(Document doc) {
+        private Food getFood(Document doc) {
             Food food = new Food();
 
             String proteins = "Белки";
@@ -266,6 +293,7 @@ public class FatParser extends AppCompatActivity {
                 }
             }
 
+            return food;
         }
 
         private boolean isTypicalProduct(Document doc) {
