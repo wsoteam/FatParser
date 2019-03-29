@@ -25,6 +25,8 @@ public class FatParser extends AppCompatActivity {
             "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я", "*"};
     static int size = 0;
     static ArrayList<String> allTitles = new ArrayList<>();
+    final static String FLAG_NULL_BREND = "-ъ0";
+    final static String FLAG_NOT_NULL_BREND = "+ъ0";
 
 
     @Override
@@ -42,11 +44,11 @@ public class FatParser extends AppCompatActivity {
             allOwner.setName("OWNERS");
             ArrayList<Owner> owners = new ArrayList<>();
             int count = 0;
-            ArrayList<String> array = getURLsOneLetter("А");
+            ArrayList<String> array = getURLsOneLetter("Э");
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            for (int j = 35; j < 36; j++) {
+            for (int j = 9; j < 10; j++) {
                 Owner owner = new Owner();
                 owner.setName(titlesOwners.get(j));
                 owner.setUrl(urlsOwners.get(j));
@@ -160,6 +162,7 @@ public class FatParser extends AppCompatActivity {
         }
 
         private ArrayList<String> getProducts(ArrayList<String> urlsPageProducts, String brend) {
+            String BAG_LINK = "Diary.aspx?";
             int sizeWithBrend = 15;
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             String firstPartUrl = "https://www.fatsecret.ru";
@@ -168,9 +171,18 @@ public class FatParser extends AppCompatActivity {
                     Document doc = Jsoup.connect(urlsPageProducts.get(j)).userAgent(USER_AGENT).get();
                     Elements elements = doc.select("td.borderBottom");
                     for (int i = 0; i < elements.size(); i++) {
-                        if (elements.get(i).html().contains(brend) || elements.get(i).html().split("\"").length < sizeWithBrend) {
-                            urlDetailProduct.add(firstPartUrl + elements.get(i).html().split("\"")[3]);
-                            Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                        if (!elements.get(i).html().contains(BAG_LINK)) {
+                            if (elements.get(i).html().contains(brend)) {
+                                urlDetailProduct.add(FLAG_NOT_NULL_BREND + firstPartUrl + elements.get(i).html().split("\"")[3]);
+                                Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                            } else {
+                                if (elements.get(i).html().split("\"").length < sizeWithBrend) {
+                                    urlDetailProduct.add(FLAG_NULL_BREND + firstPartUrl + elements.get(i).html().split("\"")[3]);
+                                    Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                                }
+                            }
+                        } else {
+                            Log.e("BAG", firstPartUrl + elements.get(i).html().split("\"")[3]);
                         }
                     }
                 }
@@ -182,15 +194,31 @@ public class FatParser extends AppCompatActivity {
         }
 
         private Food getDetailProduct(String urlPageDetailProducts) {
+            String brandFlag = urlPageDetailProducts.substring(0, 3);
+            String urlWithOutFlag = urlPageDetailProducts.substring(3);
+            boolean isHaveBrand = true;
+
+            if (brandFlag.equals(FLAG_NULL_BREND)) {
+                isHaveBrand = false;
+            }
+
             Food food = null;
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             try {
-                Document doc = Jsoup.connect(urlPageDetailProducts).userAgent(USER_AGENT).get();
+                Document doc = Jsoup.connect(urlWithOutFlag).userAgent(USER_AGENT).get();
                 if (isTypicalProduct(doc)) {
-                    food = getFood(doc);
+                    food = getFood(doc, isHaveBrand);
+                } else {
+                    if (isContainsWeightOrVolume(doc)) {
+                        food = getFood(doc, isHaveBrand);
+                    } else {
+                        if (getCorrectDocument100gram(doc) != null) {
+                            food = getFood(getCorrectDocument100gram(doc), isHaveBrand);
+                        }
+
+                    }
                 }
 
-                //getCorrectUrl100gramm(doc);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -199,7 +227,18 @@ public class FatParser extends AppCompatActivity {
             return food;
         }
 
-        private Food getFood(Document doc) {
+        private boolean isContainsWeightOrVolume(Document doc) {
+            String rightBracket = "(", leftBracket = ")", weight = "г", volume = "мл";
+            Elements elements = doc.select("td.label");
+            if (elements.get(0).html().contains(rightBracket) && elements.get(0).html().contains(leftBracket)
+                    && (elements.get(0).html().contains(weight) || elements.get(0).html().contains(volume))) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        private Food getFood(Document doc, boolean isHaveBrand) {
             Food food = new Food();
 
             String proteins = "Белки";
@@ -215,12 +254,14 @@ public class FatParser extends AppCompatActivity {
             String pottassium = "Калий";
 
 
-            Elements manufacture = doc.select("h2").select("a");
             Elements titles = doc.select("h1");
-
             food.setName(titles.html());
-            food.setBrend(manufacture.html());
-
+            if (isHaveBrand) {
+                Elements manufacture = doc.select("h2").select("a");
+                food.setBrend(manufacture.html());
+            } else {
+                food.setBrend("");
+            }
             Elements percent = doc.select("div.small");
             String htmlCarbo = percent.get(1).select("div").html().split("\"")[2];
             food.setPercentCarbohydrates(htmlCarbo.substring(htmlCarbo.indexOf("(") + 1, htmlCarbo.indexOf(")")));
@@ -310,7 +351,9 @@ public class FatParser extends AppCompatActivity {
             }
         }
 
-        private void getCorrectUrl100gramm(Document doc) {
+        private Document getCorrectDocument100gram(Document doc) {
+            Document correctDoc = null;
+            String firstPartUrl = "https://www.fatsecret.ru";
             String weight = "100 г", volume = "100 мл";
             Elements elements = doc.select("td.borderBottom");
             int positionElementWithCorrectURL = -1;
@@ -319,18 +362,17 @@ public class FatParser extends AppCompatActivity {
                     positionElementWithCorrectURL = i;
                 }
             }
-            String correctUrl = elements.get(positionElementWithCorrectURL).html().split("\"")[9];
-            Log.e("LOL", correctUrl);
-
+            String correctUrl = firstPartUrl + elements.get(positionElementWithCorrectURL).html().split("\"")[9];
+            try {
+                correctDoc = Jsoup.connect(correctUrl).userAgent(USER_AGENT).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.e("KEK", "PICK");
+                Log.e("KEK", e.getMessage());
+            }
+            return correctDoc;
         }
 
-        private String getStringInBrackets(String textInBrackets) {
-            int positionFirstBracket = 0, positionSecondBracket = 0;
-            positionFirstBracket = textInBrackets.indexOf("(") + 1;
-            positionSecondBracket = textInBrackets.indexOf(")");
-
-            return textInBrackets.substring(positionFirstBracket, positionSecondBracket);
-        }
 
     }
 }
