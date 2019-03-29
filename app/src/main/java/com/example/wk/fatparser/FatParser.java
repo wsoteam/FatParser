@@ -46,13 +46,13 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            for (int j = 0; j < urlsOwners.size(); j++) {
+            for (int j = 35; j < 36; j++) {
                 Owner owner = new Owner();
                 owner.setName(titlesOwners.get(j));
                 owner.setUrl(urlsOwners.get(j));
                 ArrayList<Food> foods = new ArrayList<>();
 
-                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)));
+                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)), titlesOwners.get(j));
                 Log.e("LOL", "start");
                 for (int i = 0; i < allDetailUrl.size(); i++) {
                     if (getDetailProduct(allDetailUrl.get(i)) != null) {
@@ -159,7 +159,8 @@ public class FatParser extends AppCompatActivity {
             return urlsPages;
         }
 
-        private ArrayList<String> getProducts(ArrayList<String> urlsPageProducts) {
+        private ArrayList<String> getProducts(ArrayList<String> urlsPageProducts, String brend) {
+            int sizeWithBrend = 15;
             ArrayList<String> urlDetailProduct = new ArrayList<>();
             String firstPartUrl = "https://www.fatsecret.ru";
             try {
@@ -167,8 +168,10 @@ public class FatParser extends AppCompatActivity {
                     Document doc = Jsoup.connect(urlsPageProducts.get(j)).userAgent(USER_AGENT).get();
                     Elements elements = doc.select("td.borderBottom");
                     for (int i = 0; i < elements.size(); i++) {
-                        urlDetailProduct.add(firstPartUrl + elements.get(i).html().split("\"")[3]);
-                        Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                        if (elements.get(i).html().contains(brend) || elements.get(i).html().split("\"").length < sizeWithBrend) {
+                            urlDetailProduct.add(firstPartUrl + elements.get(i).html().split("\"")[3]);
+                            Log.e("LOL", firstPartUrl + elements.get(i).html().split("\"")[3]);
+                        }
                     }
                 }
 
