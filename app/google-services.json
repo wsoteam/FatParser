@@ -8,6 +8,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:333941700443:android:514d346ca4187819",
+        "android_client_info": {
+          "package_name": "com.example.wk.fatparser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333941700443-g7o7h1m9f7e3hmu57gjssortfkq80tmt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.wk.fatparser",
+            "certificate_hash": "4bc011909dc2d72cedd03ce985928daba7bf1c85"
+          }
+        },
+        {
+          "client_id": "333941700443-oatnglo65m1cnku1qf307ogp7jqc6e79.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYlRmqqDxPlhztIQp3zrC_-Q3DkIp1_5k"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333941700443-oatnglo65m1cnku1qf307ogp7jqc6e79.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:333941700443:android:2969a0eded306c80",
         "android_client_info": {
           "package_name": "com.example.wk.parserdbproducts"

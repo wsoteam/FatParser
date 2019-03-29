@@ -1,6 +1,4 @@
-package com.example.wk.parserdbproducts.POJOs;
-
-import android.widget.LinearLayout;
+package com.example.wk.fatparser.POJOs;
 
 import java.io.Serializable;
 import java.util.List;

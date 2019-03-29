@@ -1,4 +1,4 @@
-package com.example.wk.parserdbproducts;
+package com.example.wk.fatparser;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

@@ -1,4 +1,4 @@
-package com.example.wk.parserdbproducts.POJOs;
+package com.example.wk.fatparser.POJOs;
 
 import java.io.Serializable;
 

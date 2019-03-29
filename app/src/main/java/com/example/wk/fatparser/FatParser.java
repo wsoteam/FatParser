@@ -1,13 +1,13 @@
-package com.example.wk.parserdbproducts;
+package com.example.wk.fatparser;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import com.example.wk.parserdbproducts.POJOs.AllOwner;
-import com.example.wk.parserdbproducts.POJOs.Food;
-import com.example.wk.parserdbproducts.POJOs.Owner;
+import com.example.wk.fatparser.POJOs.AllOwner;
+import com.example.wk.fatparser.POJOs.Food;
+import com.example.wk.fatparser.POJOs.Owner;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,9 +40,9 @@ public class FatParser extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             AllOwner allOwner = new AllOwner();
             allOwner.setName("OWNERS");
-            /*ArrayList<Owner> owners = new ArrayList<>();
+            ArrayList<Owner> owners = new ArrayList<>();
             int count = 0;
-            ArrayList<String> array = getURLsOneLetter("Ю");
+            ArrayList<String> array = getURLsOneLetter("А");
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
@@ -65,16 +65,17 @@ public class FatParser extends AppCompatActivity {
                 owners.add(owner);
             }
 
-            allOwner.setOwners(owners);*/
+            allOwner.setOwners(owners);
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("GLOBAL");
 
-            //myRef.setValue(allOwner);
+            myRef.setValue(allOwner);
 
 
             //Log.e("LOL", String.valueOf(count));
+            //Log.e("LOL", "d");
             return null;
 
         }
