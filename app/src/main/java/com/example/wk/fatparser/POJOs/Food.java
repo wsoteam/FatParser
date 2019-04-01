@@ -219,24 +219,23 @@ public class Food implements Serializable {
 
     @Override
     public String toString() {
-        return "Food{" +
-                "name='" + name + '\'' +
-                ", brend='" + brend + '\'' +
-                ", порция='" + portion + '\'' +
-                ", энергия='" + kilojoules + '\'' +
-                ", калории='" + calories + '\'' +
-                ", белки='" + proteins + '\'' +
-                ", углеводы='" + carbohydrates + '\'' +
-                ", сахар='" + sugar + '\'' +
-                ", жиры='" + fats + '\'' +
-                ", насыщенные жиры='" + saturatedFats + '\'' +
-                ", мононенасыщенные жиры='" + monoUnSaturatedFats + '\'' +
-                ", Полиненасыщенные жиры='" + polyUnSaturatedFats + '\'' +
-                ", холестерин='" + cholesterol + '\'' +
-                ", клетчатка='" + cellulose + '\'' +
-                ", натрий='" + sodium + '\'' +
-                ", калий='" + pottassium + '\'' +
-                ", процентовка='" + percentCarbohydrates + '\'' +
-                '}';
+        return "имя=" + name + "\n" +
+                "бренд=" + brend + "\n" +
+                "порция=" + portion + "\n" +
+                "энергия=" + kilojoules + "\n" +
+                "калории=" + calories + "\n" +
+                "белки=" + proteins + "\n" +
+                "углеводы=" + carbohydrates + "\n" +
+                "сахар=" + sugar + "\n" +
+                "жиры=" + fats + "\n" +
+                "насыщенные жиры=" + saturatedFats + "\n" +
+                "мононенасыщенные жиры=" + monoUnSaturatedFats + "\n" +
+                "Полиненасыщенные жиры=" + polyUnSaturatedFats + "\n" +
+                "холестерин=" + cholesterol + "\n" +
+                "клетчатка=" + cellulose + "\n" +
+                "натрий=" + sodium + "\n" +
+                "калий=" + pottassium + "\n" +
+                "процентовка=" + percentCarbohydrates + "\n" +
+                "-------------------------------------";
     }
 }

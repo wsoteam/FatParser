@@ -37,8 +37,8 @@ public class DetailListActivity extends AppCompatActivity {
             textView = itemView.findViewById(R.id.tvData);
         }
 
-        public void bind(Food food) {
-            textView.setText(food.toString());
+        public void bind(Food food, int position) {
+            textView.setText(String.valueOf(position + 1) + " - "+food.toString());
         }
     }
 
@@ -58,7 +58,7 @@ public class DetailListActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
-            holder.bind(owner.getFoods().get(position));
+            holder.bind(owner.getFoods().get(position), position);
         }
 
         @Override
