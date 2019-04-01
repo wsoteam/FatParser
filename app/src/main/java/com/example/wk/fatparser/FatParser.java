@@ -27,6 +27,7 @@ public class FatParser extends AppCompatActivity {
     static ArrayList<String> allTitles = new ArrayList<>();
     final static String FLAG_NULL_BREND = "-ъ0";
     final static String FLAG_NOT_NULL_BREND = "+ъ0";
+    final static String CURRENT_LETTER = "Ц";
 
 
     @Override
@@ -44,11 +45,13 @@ public class FatParser extends AppCompatActivity {
             allOwner.setName("OWNERS");
             ArrayList<Owner> owners = new ArrayList<>();
             int count = 0;
-            ArrayList<String> array = getURLsOneLetter("Э");
+            ArrayList<String> array = getURLsOneLetter(CURRENT_LETTER);
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            for (int j = 9; j < 10; j++) {
+            //urlsOwners.remove(9);
+            //titlesOwners.remove(9);
+            for (int j = 0; j < urlsOwners.size(); j++) {
                 Owner owner = new Owner();
                 owner.setName(titlesOwners.get(j));
                 owner.setUrl(urlsOwners.get(j));
@@ -57,9 +60,14 @@ public class FatParser extends AppCompatActivity {
                 ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)), titlesOwners.get(j));
                 Log.e("LOL", "start");
                 for (int i = 0; i < allDetailUrl.size(); i++) {
-                    if (getDetailProduct(allDetailUrl.get(i)) != null) {
-                        foods.add(getDetailProduct(allDetailUrl.get(i)));
-                        count += 1;
+                    try {
+                        if (getDetailProduct(allDetailUrl.get(i)) != null) {
+                            foods.add(getDetailProduct(allDetailUrl.get(i)));
+                            count += 1;
+                        }
+                    } catch (Exception e) {
+                        Log.e("LOL", "KEK");
+                        Log.e("LOL1", "KEK");
                     }
                 }
                 Log.e("LOL", "fin - " + String.valueOf(j));
@@ -71,13 +79,14 @@ public class FatParser extends AppCompatActivity {
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("GLOBAL");
+            DatabaseReference myRef = database.getReference(CURRENT_LETTER);
 
             myRef.setValue(allOwner);
 
 
             //Log.e("LOL", String.valueOf(count));
             //Log.e("LOL", "d");
+
             return null;
 
         }
@@ -240,7 +249,7 @@ public class FatParser extends AppCompatActivity {
 
         private Food getFood(Document doc, boolean isHaveBrand) {
             Food food = new Food();
-
+            Log.e("LOL", "pick");
             String proteins = "Белки";
             String carbohydrates = "Углеводы";
             String sugar = "Сахар";
@@ -262,16 +271,10 @@ public class FatParser extends AppCompatActivity {
             } else {
                 food.setBrend("");
             }
-            Elements percent = doc.select("div.small");
-            String htmlCarbo = percent.get(1).select("div").html().split("\"")[2];
-            food.setPercentCarbohydrates(htmlCarbo.substring(htmlCarbo.indexOf("(") + 1, htmlCarbo.indexOf(")")));
+            Elements percent = doc.select("div.factPanel");
+            Elements percents = percent.select("table");
 
-            String htmlFats = percent.get(1).select("div").html().split("\"")[4];
-            food.setPercentFats(htmlFats.substring(htmlFats.indexOf("(") + 1, htmlFats.indexOf(")")));
-
-
-            String htmlProt = percent.get(1).select("div").html().split("\"")[6];
-            food.setPercentFats(htmlProt.substring(htmlProt.indexOf("(") + 1, htmlProt.indexOf(")")));
+            food.setPercentCarbohydrates(percents.get(1).select("td").get(1).html());
 
 
             Elements elements = doc.select("div.nutpanel");
