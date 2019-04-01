@@ -45,7 +45,7 @@ public class GroupsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 allOwner = dataSnapshot.getValue(AllOwner.class);
                 rvGroupsList.setAdapter(new ItemAdapter());
-
+                setTitle(currentLetter + " - " + String.valueOf(allOwner.getOwners().size()) + " - " + getCountProducts(allOwner));
             }
 
             @Override
@@ -53,6 +53,16 @@ public class GroupsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private String getCountProducts(AllOwner allOwner) {
+        int count = 0;
+        for (int i = 0; i < allOwner.getOwners().size(); i++) {
+            if (allOwner.getOwners().get(i).getFoods() != null) {
+                count += allOwner.getOwners().get(i).getFoods().size();
+            }
+        }
+        return String.valueOf(count);
     }
 
     private class ItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
