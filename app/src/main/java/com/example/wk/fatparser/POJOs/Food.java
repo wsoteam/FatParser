@@ -216,4 +216,27 @@ public class Food implements Serializable {
     public void setPercentProteins(String percentProteins) {
         this.percentProteins = percentProteins;
     }
+
+    @Override
+    public String toString() {
+        return "Food{" +
+                "name='" + name + '\'' +
+                ", brend='" + brend + '\'' +
+                ", порция='" + portion + '\'' +
+                ", энергия='" + kilojoules + '\'' +
+                ", калории='" + calories + '\'' +
+                ", белки='" + proteins + '\'' +
+                ", углеводы='" + carbohydrates + '\'' +
+                ", сахар='" + sugar + '\'' +
+                ", жиры='" + fats + '\'' +
+                ", насыщенные жиры='" + saturatedFats + '\'' +
+                ", мононенасыщенные жиры='" + monoUnSaturatedFats + '\'' +
+                ", Полиненасыщенные жиры='" + polyUnSaturatedFats + '\'' +
+                ", холестерин='" + cholesterol + '\'' +
+                ", клетчатка='" + cellulose + '\'' +
+                ", натрий='" + sodium + '\'' +
+                ", калий='" + pottassium + '\'' +
+                ", процентовка='" + percentCarbohydrates + '\'' +
+                '}';
+    }
 }

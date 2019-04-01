@@ -22,12 +22,12 @@ public class FatParser extends AppCompatActivity {
 
     static String USER_AGENT = "Mozilla";
     static String[] ABC = new String[]{"А", "Б", "В", "Г", "Д", "Е", "Ё", "Ж", "З", "И", "К", "Л", "М", "Н", "О", "П", "Р", "С",
-            "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я", "*"};
+            "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я"};
     static int size = 0;
     static ArrayList<String> allTitles = new ArrayList<>();
     final static String FLAG_NULL_BREND = "-ъ0";
     final static String FLAG_NOT_NULL_BREND = "+ъ0";
-    final static String CURRENT_LETTER = "Ц";
+    final static String CURRENT_LETTER = "У";
 
 
     @Override
@@ -49,8 +49,8 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            //urlsOwners.remove(9);
-            //titlesOwners.remove(9);
+            //urlsOwners.remove(6);
+            //titlesOwners.remove(6);
             for (int j = 0; j < urlsOwners.size(); j++) {
                 Owner owner = new Owner();
                 owner.setName(titlesOwners.get(j));
