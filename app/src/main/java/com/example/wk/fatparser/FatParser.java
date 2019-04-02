@@ -27,7 +27,7 @@ public class FatParser extends AppCompatActivity {
     static ArrayList<String> allTitles = new ArrayList<>();
     final static String FLAG_NULL_BREND = "-ъ0";
     final static String FLAG_NOT_NULL_BREND = "+ъ0";
-    final static String CURRENT_LETTER = "У";
+    final static String CURRENT_LETTER = "Т";
 
 
     @Override
@@ -49,8 +49,8 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            //urlsOwners.remove(6);
-            //titlesOwners.remove(6);
+            urlsOwners.remove(36);
+            titlesOwners.remove(36);
             for (int j = 0; j < urlsOwners.size(); j++) {
                 Owner owner = new Owner();
                 owner.setName(titlesOwners.get(j));

@@ -14,8 +14,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Viewer.DetailListActivity"></activity>
         <activity android:name=".Viewer.GroupsActivity" />
-        <activity android:name=".FatParser" />
-        <activity android:name=".Viewer.EntryActivity">
+        <activity android:name=".Viewer.EntryActivity" />
+        <activity android:name=".FatParser">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
