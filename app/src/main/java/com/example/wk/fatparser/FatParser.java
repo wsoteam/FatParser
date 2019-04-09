@@ -49,6 +49,10 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
+            urlsOwners.remove(0);
+            titlesOwners.remove(0);
+            titlesOwners.remove(0);
+            urlsOwners.remove(0);
             for (int j = 0; j < 101; j++) {
                 try {
                     Owner owner = new Owner();
