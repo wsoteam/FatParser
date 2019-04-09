@@ -15,7 +15,9 @@ import com.example.wk.fatparser.R;
 
 public class EntryActivity extends AppCompatActivity {
     RecyclerView rvMainList;
-    static String[] ABC = new String[]{"У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я"};
+    static String[] ABC = new String[]{"А", "Б", "Б1", "В", "В1", "Г", "Ё", "Ж", "З",
+            "И", "Й", "К", "К1", "К2", "Л",
+            "М", "М1", "М2", "Н", "О", "П1", "П2", "Р", "Р1", "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я",};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
