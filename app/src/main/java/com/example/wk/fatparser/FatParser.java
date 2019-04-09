@@ -27,7 +27,7 @@ public class FatParser extends AppCompatActivity {
     static ArrayList<String> allTitles = new ArrayList<>();
     final static String FLAG_NULL_BREND = "-ъ0";
     final static String FLAG_NOT_NULL_BREND = "+ъ0";
-    final static String CURRENT_LETTER = "Т";
+    final static String CURRENT_LETTER = "С"; //C,
 
 
     @Override
@@ -49,37 +49,38 @@ public class FatParser extends AppCompatActivity {
             ArrayList<String> urlsOwners = fromTitleToUrls(getTitlesOneLetter(array));
             Log.e("LOL", String.valueOf(urlsOwners.size()));
             ArrayList<String> titlesOwners = getTitlesOneLetter(array);
-            urlsOwners.remove(36);
-            titlesOwners.remove(36);
-            for (int j = 0; j < urlsOwners.size(); j++) {
-                Owner owner = new Owner();
-                owner.setName(titlesOwners.get(j));
-                owner.setUrl(urlsOwners.get(j));
-                ArrayList<Food> foods = new ArrayList<>();
-
-                ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)), titlesOwners.get(j));
-                Log.e("LOL", "start");
-                for (int i = 0; i < allDetailUrl.size(); i++) {
-                    try {
-                        if (getDetailProduct(allDetailUrl.get(i)) != null) {
-                            foods.add(getDetailProduct(allDetailUrl.get(i)));
-                            count += 1;
+            for (int j = 0; j < 101; j++) {
+                try {
+                    Owner owner = new Owner();
+                    owner.setName(titlesOwners.get(j));
+                    owner.setUrl(urlsOwners.get(j));
+                    ArrayList<Food> foods = new ArrayList<>();
+                    ArrayList<String> allDetailUrl = getProducts(getUrlsPagesListProducts(urlsOwners.get(j)), titlesOwners.get(j));
+                    Log.e("LOL", "start");
+                    for (int i = 0; i < allDetailUrl.size(); i++) {
+                        try {
+                            if (getDetailProduct(allDetailUrl.get(i)) != null) {
+                                foods.add(getDetailProduct(allDetailUrl.get(i)));
+                                count += 1;
+                            }
+                        } catch (Exception e) {
+                            Log.e("LOL", "KEK");
+                            Log.e("LOL1", "KEK");
                         }
-                    } catch (Exception e) {
-                        Log.e("LOL", "KEK");
-                        Log.e("LOL1", "KEK");
                     }
+                    Log.e("LOL", "fin - " + String.valueOf(j));
+                    owner.setFoods(foods);
+                    owners.add(owner);
+                } catch (Exception e) {
+                    Log.e("Empty", String.valueOf(j) + titlesOwners.get(j));
                 }
-                Log.e("LOL", "fin - " + String.valueOf(j));
-                owner.setFoods(foods);
-                owners.add(owner);
             }
 
             allOwner.setOwners(owners);
 
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference(CURRENT_LETTER);
+            DatabaseReference myRef = database.getReference(CURRENT_LETTER );
 
             myRef.setValue(allOwner);
 
