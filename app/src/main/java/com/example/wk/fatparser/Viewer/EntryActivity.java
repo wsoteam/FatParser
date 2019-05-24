@@ -1,7 +1,6 @@
 package com.example.wk.fatparser.Viewer;
 
 import android.content.Intent;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.wk.fatparser.POJOs.AllOwner;
+import com.example.wk.fatparser.POJOs.Food;
 import com.example.wk.fatparser.POJOs.Global;
 import com.example.wk.fatparser.POJOs.Owner;
 import com.example.wk.fatparser.R;
@@ -28,16 +28,12 @@ import com.squareup.moshi.Moshi;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.provider.Telephony.Mms.Part.FILENAME;
 
 public class EntryActivity extends AppCompatActivity {
     RecyclerView rvMainList;
@@ -69,7 +65,8 @@ public class EntryActivity extends AppCompatActivity {
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createGlobal(readFile());
+                global = createGlobal(readFile());
+                checkPercent(global);
             }
         });
 
@@ -84,16 +81,183 @@ public class EntryActivity extends AppCompatActivity {
 
     }
 
-    private void createGlobal(String readFile) {
+    private void checkPercent(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (!food.getPercentCarbohydrates().contains("углев") && !food.getPercentFats().contains("жир")
+                            && !food.getPercentProteins().contains("белк")) {
+                        count += 1;
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void viewProc(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    String[] arr = food.getPercentCarbohydrates().split(",");
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentFats(arr[0].split(">")[1].split("<")[0]);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentProteins(arr[2].split("\\.")[0]);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCarbohydrates(arr[1]);
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void viewUnTypicalPortions(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        ArrayList<String> typicalPortion = new ArrayList<>();
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    /*if(food.getPortion().contains("100 г")){
+                        //Log.e("LOL", food.getPortion());
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("100г");
+                    }*/
+                    /*if(food.getPortion().contains("100 мл")){
+                        //Log.e("LOL", food.getPortion());
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("100мл");
+                    }*/
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл")) {
+                        if (food.getPortion().contains(" 1 г") && !food.getPortion().contains(")")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("1г");
+                        }
+                    }*/
+
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("(") && food.getPortion().contains(")")) {
+                            String[] arr = food.getPortion().split("\\(");
+                            String[] arrr = arr[1].split("\\)");
+                            //Log.e("LOL", arrr[0]);
+                            if (arrr[0].length() < 7) {
+                                globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion(arrr[0].replace(" ", ""));
+                                //Log.e("LOL", arrr[0].replace(" ", ""));
+                            }
+                        }
+                    }*/
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции") && food.getPortion().contains("1/2 г")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("0.5г");
+                        }
+                    }*/
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции") && food.getPortion().contains("(1 / 4 фунта)")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("113г");
+                        }
+                    }*/
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции") && food.getPortion().contains("2 г")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("2г");
+                        }
+                    }*/
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции") && food.getPortion().contains("5 г")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("5г");
+                        }
+                    }*/
+
+                    /*if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции") && food.getPortion().contains("10 г")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion("10г");
+                        }
+                    }*/
+
+                    if (!food.getPortion().equals("100г") && !food.getPortion().equals("100мл") && !food.getPortion().equals("1г")
+                            && !food.getPortion().equals("1мл")) {
+                        if (food.getPortion().contains("Размер Порции")) {
+                            globalCur.getLetters().get(i).getOwners().get(j).getFoods().remove(k);
+                        }
+                    }
+
+                    /*if (!food.getPortion().contains("100г") && !food.getPortion().contains("100мл") &&
+                    !food.getPortion().contains("100 г") && !food.getPortion().contains("1 г") &&
+                            !food.getPortion().contains("г)") && !food.getPortion().contains("мл)") &&
+                            !food.getPortion().contains("1 мл") && !food.getPortion().contains("100 мл")
+                            && !food.getPortion().contains("2 г") && !food.getPortion().contains("5 г")
+                            && !food.getPortion().contains("500 г") && !food.getPortion().contains("10 г")
+                            && !food.getPortion().contains("1 / 4 фунта")) {
+                        count += 1;
+                        Log.e("LOL", food.getPortion());
+                        //globalCur.getLetters().get(i).getOwners().get(j).getFoods().remove(k);
+                    }*/
+                }
+            }
+        }
+        Log.e("LOL", "END viewUnTypicalPortions" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void viewTagsNames(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getName().contains(">") || food.getName().contains("<")) {
+                        String[] names = food.getName().split(">");
+                        String[] normName = names[1].split("<");
+                        food.setName(normName[0]);
+                        Log.e("LOL", food.getName());
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END viewTagsNames" + String.valueOf(count));
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void deleteEmptyNamesOfFood(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                count += globalCur.getLetters().get(i).getOwners().get(j).getFoods().size();
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food == null) {
+                        Log.e("LOL", "LOL");
+                        //globalCur.getLetters().get(i).getOwners().get(j).getFoods().remove(k);
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END deleteEmptyNamesOfFood" + String.valueOf(count));
+        //writeInFile(getJson(globalCur));
+    }
+
+    private Global createGlobal(String readFile) {
+        Global global = new Global();
         Moshi moshi = new Moshi.Builder().build();
         JsonAdapter<Global> globalJsonAdapter = moshi.adapter(Global.class);
         try {
-            Global global = globalJsonAdapter.fromJson(readFile);
-            check(global);
+            global = globalJsonAdapter.fromJson(readFile);
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("LOL", "fuck read json");
         }
+        return global;
     }
 
     private void deleteEmptyOwners(Global global) {
