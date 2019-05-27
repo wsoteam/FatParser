@@ -66,7 +66,7 @@ public class EntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 global = createGlobal(readFile());
-                replaceProt(global);
+                replaceFats(global);
             }
         });
 
@@ -80,6 +80,186 @@ public class EntryActivity extends AppCompatActivity {
 
 
     }
+
+    private void replaceFats(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getSaturatedFats() != null) {
+                        String[] arr = food.getSaturatedFats().split("г");
+                        String newSF;
+                        if (arr[0].contains(",")) {
+                            newSF = arr[0].replace(",", ".");
+                        } else {
+                            newSF = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSaturatedFats(newSF);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getSaturatedFats());
+                    }
+
+                    if (food.getMonoUnSaturatedFats() != null) {
+                        String[] arr = food.getMonoUnSaturatedFats().split("г");
+                        String newMUS;
+                        if (arr[0].contains(",")) {
+                            newMUS = arr[0].replace(",", ".");
+                        } else {
+                            newMUS = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setMonoUnSaturatedFats(newMUS);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getMonoUnSaturatedFats());
+                    }
+
+                    if (food.getPolyUnSaturatedFats() != null) {
+                        String[] arr = food.getPolyUnSaturatedFats().split("г");
+                        String newPUS;
+                        if (arr[0].contains(",")) {
+                            newPUS = arr[0].replace(",", ".");
+                        } else {
+                            newPUS = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPolyUnSaturatedFats(newPUS);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPolyUnSaturatedFats());
+                    }
+
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
+    }
+
+    private void replaceFat(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    String[] arr = food.getFats().split("г");
+                    String newFat;
+                    if (arr[0].contains(",")) {
+                        newFat = arr[0].replace(",", ".");
+                    } else {
+                        newFat = arr[0];
+                    }
+                    //Log.e("LOL", newEnergy);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setFats(newFat);
+                    //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getFats());
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
+    }
+
+    private void replaceFewFields(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getSugar() != null) {
+                        String[] arr = food.getSugar().split("г");
+                        String newSugar;
+                        if (arr[0].contains(",")) {
+                            newSugar = arr[0].replace(",", ".");
+                        } else {
+                            newSugar = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSugar(newSugar);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getSugar());
+                    }
+
+                    if (food.getCholesterol() != null) {
+                        String[] arr = food.getCholesterol().split("мг");
+                        String newCholesterol;
+                        if (arr[0].contains(",")) {
+                            newCholesterol = arr[0].replace(",", ".");
+                        } else {
+                            newCholesterol = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCholesterol(newCholesterol);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getCholesterol());
+                    }
+
+                    if (food.getCellulose() != null) {
+                        String[] arr = food.getCellulose().split("г");
+                        String newCell;
+                        if (arr[0].contains(",")) {
+                            newCell = arr[0].replace(",", ".");
+                        } else {
+                            newCell = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCellulose(newCell);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getCellulose());
+                    }
+
+                    if (food.getSodium() != null) {
+                        String[] arr = food.getSodium().split("мг");
+                        String newSod;
+                        if (arr[0].contains(",")) {
+                            newSod = arr[0].replace(",", ".");
+                        } else {
+                            newSod = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSodium(newSod);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getSodium());
+                    }
+
+                    if (food.getPottassium() != null) {
+                        String[] arr = food.getPottassium().split("мг");
+                        String newPottasium;
+                        if (arr[0].contains(",")) {
+                            newPottasium = arr[0].replace(",", ".");
+                        } else {
+                            newPottasium = arr[0];
+                        }
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPottassium(newPottasium);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPottassium());
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
+    }
+
+    private void replaceCarbo(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    String[] arr = food.getCarbohydrates().split("г");
+                    String newCarbo;
+                    if (arr[0].contains(",")) {
+                        newCarbo = arr[0].replace(",", ".");
+                    } else {
+                        newCarbo = arr[0];
+                    }
+                    //Log.e("LOL", newEnergy);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCarbohydrates(newCarbo);
+                    //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getCarbohydrates());
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
+    }
+
     private void replaceProt(Global global) {
         Global globalCur = global;
         int count = 0;
@@ -87,25 +267,22 @@ public class EntryActivity extends AppCompatActivity {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
                     Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
-                    if (!food.getProteins().contains(",")){
-                        count +=1;
-                    }
-                    /*String[] arr = food.getCalories().split("ккал");
-                    String newEnergy;
+                    String[] arr = food.getProteins().split("г");
+                    String newProt;
                     if (arr[0].contains(",")) {
-                        newEnergy = arr[0].replace(",", ".");
+                        newProt = arr[0].replace(",", ".");
                     } else {
-                        newEnergy = arr[0];
+                        newProt = arr[0];
                     }
                     //Log.e("LOL", newEnergy);
-                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCalories(newEnergy);*/
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setProteins(newProt);
+                    //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getProteins());
                 }
             }
         }
         Log.e("LOL", "END checkAllFields" + count);
-        //writeInFile(getJson(globalCur));
+        writeInFile(getJson(globalCur));
     }
-
 
 
     private void replaceKcal(Global global) {
