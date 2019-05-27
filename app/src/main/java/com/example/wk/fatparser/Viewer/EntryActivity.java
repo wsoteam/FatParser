@@ -66,7 +66,7 @@ public class EntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 global = createGlobal(readFile());
-                replaceFats(global);
+                replacePercents(global);
             }
         });
 
@@ -79,6 +79,45 @@ public class EntryActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void replacePercents(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getPercentProteins() != null) {
+                        String[] arr = food.getPercentProteins().split("%");
+                        String newPP;
+                        newPP = arr[0];
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentProteins(newPP);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPercentProteins());
+                    }
+                    if (food.getPercentFats() != null) {
+                        String[] arr = food.getPercentFats().split("%");
+                        String newPF;
+                        newPF = arr[0];
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentFats(newPF);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPercentFats());
+                    }
+                    if (food.getPercentCarbohydrates() != null) {
+                        String[] arr = food.getPercentCarbohydrates().split("%");
+                        String newPC;
+                        newPC = arr[0];
+                        //Log.e("LOL", newEnergy);
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentCarbohydrates(newPC);
+                        //Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPercentCarbohydrates());
+                    }
+
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
     }
 
     private void replaceFats(Global global) {
