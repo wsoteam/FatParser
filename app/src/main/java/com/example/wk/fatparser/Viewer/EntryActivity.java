@@ -66,7 +66,7 @@ public class EntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 global = createGlobal(readFile());
-                checkPercent(global);
+                replaceProt(global);
             }
         });
 
@@ -80,17 +80,140 @@ public class EntryActivity extends AppCompatActivity {
 
 
     }
-
-    private void checkPercent(Global global) {
+    private void replaceProt(Global global) {
         Global globalCur = global;
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
                     Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
-                    if (!food.getPercentCarbohydrates().contains("углев") && !food.getPercentFats().contains("жир")
-                            && !food.getPercentProteins().contains("белк")) {
+                    if (!food.getProteins().contains(",")){
+                        count +=1;
+                    }
+                    /*String[] arr = food.getCalories().split("ккал");
+                    String newEnergy;
+                    if (arr[0].contains(",")) {
+                        newEnergy = arr[0].replace(",", ".");
+                    } else {
+                        newEnergy = arr[0];
+                    }
+                    //Log.e("LOL", newEnergy);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCalories(newEnergy);*/
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+
+
+    private void replaceKcal(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    String[] arr = food.getCalories().split("ккал");
+                    String newEnergy;
+                    if (arr[0].contains(",")) {
+                        newEnergy = arr[0].replace(",", ".");
+                    } else {
+                        newEnergy = arr[0];
+                    }
+                    //Log.e("LOL", newEnergy);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCalories(newEnergy);
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        writeInFile(getJson(globalCur));
+    }
+
+    private void replaceEnergy(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getKilojoules().equals("0 ")) {
                         count += 1;
+                    }
+                    /*String[] arr = food.getKilojoules().split("кДж");
+                    String newEnergy;
+                    if (arr[0].contains(",")) {
+                        newEnergy = arr[0].replace(",", ".");
+                    } else {
+                        newEnergy = arr[0];
+                    }
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setKilojoules(newEnergy);*/
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void checkPortion(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    count += 1;
+                    double port = 0;
+                    if (food.getPortion().contains("г")) {
+                        String[] portionG = food.getPortion().split("г");
+                        port = Double.parseDouble(portionG[0]);
+                    } else if (food.getPortion().contains("мл")) {
+                        String[] portionML = food.getPortion().split("мл");
+                        port = Double.parseDouble(portionML[0]);
+                    } else {
+                        Log.e("LOL", "piz");
+                    }
+
+                    Log.e("LOL", String.valueOf(port));
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+    private void replaceDot(Global global) {
+        Log.e("LOL", "Start viewProc");
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getPortion().contains(",")) {
+                        count += 1;
+                        String port = food.getPortion().replace(",", ".");
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion(port);
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        writeInFile(getJson(globalCur));
+    }
+
+    private void deleteUnxpected(Global global) {
+        Log.e("LOL", "Start viewProc");
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getPortion().contains("500 г торта)") || food.getPortion().contains("(0,816 г)")) {
+                        count += 1;
+                        //globalCur.getLetters().get(i).getOwners().get(j).getFoods().remove(k);
                     }
                 }
             }
@@ -99,17 +222,40 @@ public class EntryActivity extends AppCompatActivity {
         //writeInFile(getJson(globalCur));
     }
 
-    private void viewProc(Global global) {
+
+
+    /*private void checkPercent(Global global) {
         Global globalCur = global;
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
                     Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    if (food.getPortion().contains(",")){
+                        String port = food.getPortion().replace("," , ".");
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPortion(port);
+                        Log.e("LOL", globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).getPortion());
+                    }
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        writeInFile(getJson(globalCur));
+    }*/
+
+    private void viewProc(Global global) {
+        Log.e("LOL", "Start viewProc");
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    count += 1;
                     String[] arr = food.getPercentCarbohydrates().split(",");
                     globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentFats(arr[0].split(">")[1].split("<")[0]);
                     globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentProteins(arr[2].split("\\.")[0]);
-                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCarbohydrates(arr[1]);
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPercentCarbohydrates(arr[1]);
                 }
             }
         }
