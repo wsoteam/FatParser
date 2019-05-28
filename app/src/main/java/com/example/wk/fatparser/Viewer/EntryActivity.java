@@ -17,6 +17,8 @@ import com.example.wk.fatparser.POJOs.AllOwner;
 import com.example.wk.fatparser.POJOs.Food;
 import com.example.wk.fatparser.POJOs.Global;
 import com.example.wk.fatparser.POJOs.Owner;
+import com.example.wk.fatparser.POJOsForConvert.CFood;
+import com.example.wk.fatparser.POJOsForConvert.CGlobal;
 import com.example.wk.fatparser.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -83,110 +85,147 @@ public class EntryActivity extends AppCompatActivity {
 
     private void atempt(Global global) {
         Global globalCur = global;
+        CGlobal cGlobal = new CGlobal();
+        cGlobal.setName("finDb");
+        List<AllOwner> cLetters = new ArrayList<>();
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    count += 1;
                     Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
-                    /*double portion;
-                    if (food.getPortion().contains("мл")){
+                    CFood cFood = new CFood();
+                    double portion;
+                    boolean isLiquid;
+                    if (food.getPortion().contains("мл")) {
                         portion = Double.parseDouble(food.getPortion().split("мл")[0]);
-                    }else{
+                        isLiquid = true;
+                    } else {
                         portion = Double.parseDouble(food.getPortion().split("г")[0]);
+                        isLiquid = false;
                     }
-                    Log.e("LOL", String.valueOf(portion));*/
 
-                    /*double energy;
-                    energy = Double.parseDouble(food.getKilojoules());*/
+                    cFood.setPortion(portion);
+                    cFood.setLiquid(isLiquid);
+                    cFood.setName(food.getName());
+                    cFood.setBrend(food.getBrend());
+                    cFood.setUrl(food.getUrl());
 
-                    /*double kcal;
-                    kcal = Double.parseDouble(food.getCalories());*/
+                    double energy;
+                    energy = Double.parseDouble(food.getKilojoules());
 
-                    /*double prot;
-                    prot = Double.parseDouble(food.getProteins());*/
+                    cFood.setKilojoules(energy);
 
-                    /*double carbo;
-                    carbo = Double.parseDouble(food.getCarbohydrates());*/
+                    double kcal;
+                    kcal = Double.parseDouble(food.getCalories());
 
-                    /*double fats;
-                    fats = Double.parseDouble(food.getFats());*/
+                    cFood.setCalories(kcal);
 
-                    /*double sugar;
+                    double prot;
+                    prot = Double.parseDouble(food.getProteins());
+
+                    cFood.setProteins(prot);
+
+                    double carbo;
+                    carbo = Double.parseDouble(food.getCarbohydrates());
+
+                    cFood.setCarbohydrates(carbo);
+
+                    double fats;
+                    fats = Double.parseDouble(food.getFats());
+
+                    cFood.setFats(fats);
+
+                    double sugar;
                     if (food.getSugar() != null) {
                         sugar = Double.parseDouble(food.getSugar());
                     } else {
                         sugar = -1;
-                    }*/
+                    }
 
-                    /*double sf;
+                    cFood.setSugar(sugar);
+
+                    double sf;
                     if (food.getSaturatedFats() != null) {
                         sf = Double.parseDouble(food.getSaturatedFats());
                     } else {
                         sf = -1;
-                    }*/
+                    }
 
-                    /*double musf;
+                    cFood.setSaturatedFats(sf);
+
+                    double musf;
                     if (food.getMonoUnSaturatedFats() != null) {
                         musf = Double.parseDouble(food.getMonoUnSaturatedFats());
                     } else {
                         musf = -1;
-                    }*/
+                    }
 
-                    /*double pusf;
+                    cFood.setMonoUnSaturatedFats(musf);
+
+                    double pusf;
                     if (food.getPolyUnSaturatedFats() != null) {
                         pusf = Double.parseDouble(food.getPolyUnSaturatedFats());
                     } else {
                         pusf = -1;
-                    }*/
+                    }
 
-                    /*double choleterol;
+                    cFood.setPolyUnSaturatedFats(pusf);
+
+                    double choleterol;
                     if (food.getCholesterol() != null) {
                         choleterol = Double.parseDouble(food.getCholesterol());
                     } else {
                         choleterol = -1;
-                    }*/
+                    }
 
-                    /*double cell;
+                    cFood.setCholesterol(choleterol);
+
+                    double cell;
                     if (food.getCellulose() != null) {
                         cell = Double.parseDouble(food.getCellulose());
                     } else {
                         cell = -1;
-                    }*/
+                    }
 
-                    /*double sod;
+                    cFood.setCellulose(cell);
+
+                    double sod;
                     if (food.getSodium() != null) {
                         sod = Double.parseDouble(food.getSodium());
                     } else {
                         sod = -1;
-                    }*/
+                    }
 
-                    /*double pot;
+                    cFood.setSodium(sod);
+
+                    double pot;
                     if (food.getPottassium() != null) {
                         pot = Double.parseDouble(food.getPottassium());
                     } else {
                         pot = -1;
-                    }*/
-
-                    /*int pc;
-                    pc = Integer.parseInt(food.getPercentCarbohydrates().split(" ")[1]);*/
-
-                    /*int pf;
-                    pf = Integer.parseInt(food.getPercentFats());*/
-
-                    /*int pp;
-                    pp = Integer.parseInt(food.getPercentProteins().split(" ")[1]);*/
-
-                    if (food.getPortion().contains("мл")){
-
-                    }else if (food.getPortion().contains("г")){
-
-                    }else {
-                        Log.e("LOL", food.getPortion());
                     }
 
+                    cFood.setPottassium(pot);
+
+                    int pc;
+                    pc = Integer.parseInt(food.getPercentCarbohydrates().split(" ")[1]);
+
+                    cFood.setPercentCarbohydrates(pc);
+
+                    int pf;
+                    pf = Integer.parseInt(food.getPercentFats());
+
+                    cFood.setPercentCarbohydrates(pf);
+
+                    int pp;
+                    pp = Integer.parseInt(food.getPercentProteins().split(" ")[1]);
+
+                    cFood.setPercentCarbohydrates(pp);
 
                 }
             }
+
         }
         Log.e("LOL", "END checkAllFields" + count);
         //writeInFile(getJson(globalCur));
