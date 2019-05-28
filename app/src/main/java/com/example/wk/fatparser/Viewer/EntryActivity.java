@@ -51,7 +51,7 @@ public class EntryActivity extends AppCompatActivity {
             "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    CGlobal global = new CGlobal();
+    Global global = new Global();
     List<AllOwner> letters = new ArrayList<>();
 
     @Override
@@ -62,20 +62,23 @@ public class EntryActivity extends AppCompatActivity {
         rvMainList = findViewById(R.id.rvMainList);
         rvMainList.setLayoutManager(new LinearLayoutManager(this));
         rvMainList.setAdapter(new ItemAdapter(ABC));
-        btnFin.setVisibility(View.GONE);
-        btnLoad.setVisibility(View.GONE);
+
 
         btnLoad = findViewById(R.id.btnLoad);
         btnFin = findViewById(R.id.btnFin);
+
+        btnFin.setVisibility(View.GONE);
         Log.e("LOL", String.valueOf(ABC.length));
 
-        global = createCGlobal(readCFile());
+
 
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                global = createCGlobal(readCFile());
-                readNewBase(global);
+                /*global = createCGlobal(readCFile());
+                Log.e("LOL", "FIN");*/
+                global = createGlobal(readFile());
+                Log.e("LOL", "FIN");
             }
         });
 
@@ -89,14 +92,14 @@ public class EntryActivity extends AppCompatActivity {
 
     }
 
-    private void readNewBase(CGlobal global) {
+    private void readNewBase(Global global) {
         Log.e("LOL", "Start viewProc");
-        CGlobal globalCur = global;
+        Global globalCur = global;
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
-                    CFood food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
                     count += 1;
                 }
             }
@@ -799,6 +802,7 @@ public class EntryActivity extends AppCompatActivity {
     }
 
     private CGlobal createCGlobal(String readFile) {
+        Log.e("LOL", "start ser");
         CGlobal global = new CGlobal();
         Moshi moshi = new Moshi.Builder().build();
         JsonAdapter<CGlobal> globalJsonAdapter = moshi.adapter(CGlobal.class);
@@ -808,10 +812,12 @@ public class EntryActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e("LOL", "fuck read json");
         }
+        Log.e("LOL", "fin ser");
         return global;
     }
 
     private Global createGlobal(String readFile) {
+        Log.e("LOL", "start ser");
         Global global = new Global();
         Moshi moshi = new Moshi.Builder().build();
         JsonAdapter<Global> globalJsonAdapter = moshi.adapter(Global.class);
@@ -821,6 +827,7 @@ public class EntryActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e("LOL", "fuck read json");
         }
+        Log.e("LOL", "fin ser");
         return global;
     }
 
@@ -968,8 +975,7 @@ public class EntryActivity extends AppCompatActivity {
         String json = "";
         try {
             // открываем поток для чтения
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    openFileInput("FoodDBFin")));
+            BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("FoodDBFin")));
             // читаем содержимое
             while ((str = br.readLine()) != null) {
                 json += str;
