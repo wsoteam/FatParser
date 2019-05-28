@@ -219,23 +219,27 @@ public class Food implements Serializable {
 
     @Override
     public String toString() {
-        return "имя=" + name + "\n" +
-                "бренд=" + brend + "\n" +
-                "порция=" + portion + "\n" +
-                "энергия=" + kilojoules + "\n" +
-                "калории=" + calories + "\n" +
-                "белки=" + proteins + "\n" +
-                "углеводы=" + carbohydrates + "\n" +
-                "сахар=" + sugar + "\n" +
-                "жиры=" + fats + "\n" +
-                "насыщенные жиры=" + saturatedFats + "\n" +
-                "мононенасыщенные жиры=" + monoUnSaturatedFats + "\n" +
-                "Полиненасыщенные жиры=" + polyUnSaturatedFats + "\n" +
-                "холестерин=" + cholesterol + "\n" +
-                "клетчатка=" + cellulose + "\n" +
-                "натрий=" + sodium + "\n" +
-                "калий=" + pottassium + "\n" +
-                "процентовка=" + percentCarbohydrates + "\n" +
-                "-------------------------------------";
+        return "Food{" +
+                "name='" + name + '\'' +
+                ", brend='" + brend + '\'' +
+                ", url='" + url + '\'' +
+                ", portion='" + portion + '\'' +
+                ", kilojoules='" + kilojoules + '\'' +
+                ", calories='" + calories + '\'' +
+                ", proteins='" + proteins + '\'' +
+                ", carbohydrates='" + carbohydrates + '\'' +
+                ", sugar='" + sugar + '\'' +
+                ", fats='" + fats + '\'' +
+                ", saturatedFats='" + saturatedFats + '\'' +
+                ", monoUnSaturatedFats='" + monoUnSaturatedFats + '\'' +
+                ", polyUnSaturatedFats='" + polyUnSaturatedFats + '\'' +
+                ", cholesterol='" + cholesterol + '\'' +
+                ", cellulose='" + cellulose + '\'' +
+                ", sodium='" + sodium + '\'' +
+                ", pottassium='" + pottassium + '\'' +
+                ", percentCarbohydrates='" + percentCarbohydrates + '\'' +
+                ", percentFats='" + percentFats + '\'' +
+                ", percentProteins='" + percentProteins + '\'' +
+                '}';
     }
 }

@@ -223,4 +223,31 @@ public class CFood implements Serializable {
     public void setPercentProteins(int percentProteins) {
         this.percentProteins = percentProteins;
     }
+
+    @Override
+    public String toString() {
+        return "CFood{" +
+                "name='" + name + '\'' +
+                ", brend='" + brend + '\'' +
+                ", url='" + url + '\'' +
+                ", portion=" + portion +
+                ", isLiquid=" + isLiquid +
+                ", kilojoules=" + kilojoules +
+                ", calories=" + calories +
+                ", proteins=" + proteins +
+                ", carbohydrates=" + carbohydrates +
+                ", sugar=" + sugar +
+                ", fats=" + fats +
+                ", saturatedFats=" + saturatedFats +
+                ", monoUnSaturatedFats=" + monoUnSaturatedFats +
+                ", polyUnSaturatedFats=" + polyUnSaturatedFats +
+                ", cholesterol=" + cholesterol +
+                ", cellulose=" + cellulose +
+                ", sodium=" + sodium +
+                ", pottassium=" + pottassium +
+                ", percentCarbohydrates=" + percentCarbohydrates +
+                ", percentFats=" + percentFats +
+                ", percentProteins=" + percentProteins +
+                '}';
+    }
 }

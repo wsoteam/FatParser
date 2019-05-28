@@ -93,7 +93,7 @@ public class EntryActivity extends AppCompatActivity {
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             CAllOwner cAllOwner = new CAllOwner();
-            cAllOwner.setName(globalCur.getName());
+            cAllOwner.setName(globalCur.getLetters().get(i).getName());
             List<COwner> cOwners = new ArrayList<>();
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
 
@@ -227,12 +227,12 @@ public class EntryActivity extends AppCompatActivity {
                     int pf;
                     pf = Integer.parseInt(food.getPercentFats());
 
-                    cFood.setPercentCarbohydrates(pf);
+                    cFood.setPercentFats(pf);
 
                     int pp;
                     pp = Integer.parseInt(food.getPercentProteins().split(" ")[1]);
 
-                    cFood.setPercentCarbohydrates(pp);
+                    cFood.setPercentProteins(pp);
                     cFoods.add(cFood);
                 }
                 //готовый продукт
@@ -243,7 +243,8 @@ public class EntryActivity extends AppCompatActivity {
             cLetters.add(cAllOwner);
         }
         cGlobal.setLetters(cLetters);
-        Log.e("LOL", cGlobal.getLetters().get(10).getName() + "-- " + cGlobal.getLetters().get(10).getOwners().get(1).getName());
+        Log.e("LOL", cGlobal.getLetters().get(11).getName() + "-- " + cGlobal.getLetters().get(11).getOwners().get(1).getName());
+        Log.e("LOL", cGlobal.getLetters().get(50).getOwners().get(1).getFoods().get(3).toString());
         Log.e("LOL", "END checkAllFields" + count);
         //writeInFile(getJson(globalCur));
     }
