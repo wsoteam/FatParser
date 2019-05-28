@@ -17,8 +17,10 @@ import com.example.wk.fatparser.POJOs.AllOwner;
 import com.example.wk.fatparser.POJOs.Food;
 import com.example.wk.fatparser.POJOs.Global;
 import com.example.wk.fatparser.POJOs.Owner;
+import com.example.wk.fatparser.POJOsForConvert.CAllOwner;
 import com.example.wk.fatparser.POJOsForConvert.CFood;
 import com.example.wk.fatparser.POJOsForConvert.CGlobal;
+import com.example.wk.fatparser.POJOsForConvert.COwner;
 import com.example.wk.fatparser.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -87,10 +89,19 @@ public class EntryActivity extends AppCompatActivity {
         Global globalCur = global;
         CGlobal cGlobal = new CGlobal();
         cGlobal.setName("finDb");
-        List<AllOwner> cLetters = new ArrayList<>();
+        List<CAllOwner> cLetters = new ArrayList<>();
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            CAllOwner cAllOwner = new CAllOwner();
+            cAllOwner.setName(globalCur.getName());
+            List<COwner> cOwners = new ArrayList<>();
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+
+                COwner cOwner = new COwner();
+                cOwner.setName(globalCur.getLetters().get(i).getOwners().get(j).getName());
+                cOwner.setUrl(globalCur.getLetters().get(i).getOwners().get(j).getUrl());
+                List<CFood> cFoods = new ArrayList<>();
+
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
                     count += 1;
                     Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
@@ -222,11 +233,17 @@ public class EntryActivity extends AppCompatActivity {
                     pp = Integer.parseInt(food.getPercentProteins().split(" ")[1]);
 
                     cFood.setPercentCarbohydrates(pp);
-
+                    cFoods.add(cFood);
                 }
+                //готовый продукт
+                cOwner.setFoods(cFoods);
+                cOwners.add(cOwner);
             }
-
+            cAllOwner.setOwners(cOwners);
+            cLetters.add(cAllOwner);
         }
+        cGlobal.setLetters(cLetters);
+        Log.e("LOL", cGlobal.getLetters().get(10).getName() + "-- " + cGlobal.getLetters().get(10).getOwners().get(1).getName());
         Log.e("LOL", "END checkAllFields" + count);
         //writeInFile(getJson(globalCur));
     }
