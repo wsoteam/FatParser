@@ -12,17 +12,22 @@ import android.widget.TextView;
 
 import com.example.wk.fatparser.POJOs.Food;
 import com.example.wk.fatparser.POJOs.Owner;
+import com.example.wk.fatparser.POJOsForConvert.CFood;
+import com.example.wk.fatparser.POJOsForConvert.COwner;
 import com.example.wk.fatparser.R;
+import com.example.wk.fatparser.Singleton.DataHolder;
 
 public class DetailListActivity extends AppCompatActivity {
     RecyclerView rvProducts;
-    Owner owner;
+    COwner owner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_list);
-        owner = (Owner) getIntent().getSerializableExtra(Config.TAG_BREND);
+        owner = DataHolder.getcGlobal().getLetters().get(getIntent().
+                getIntExtra(Config.TAG_LETTER, 0)).getOwners().get(getIntent().
+                getIntExtra(Config.TAG_BREND, 0));
         setTitle(owner.getName());
         rvProducts = findViewById(R.id.rvProducts);
         rvProducts.setLayoutManager(new LinearLayoutManager(this));
@@ -37,15 +42,15 @@ public class DetailListActivity extends AppCompatActivity {
             textView = itemView.findViewById(R.id.tvData);
         }
 
-        public void bind(Food food, int position) {
+        public void bind(CFood food, int position) {
             textView.setText(String.valueOf(position + 1) + " - "+food.toString());
         }
     }
 
     private class ItemAdapter extends RecyclerView.Adapter<ItemHolder> {
-        Owner owner;
+        COwner owner;
 
-        public ItemAdapter(Owner owner) {
+        public ItemAdapter(COwner owner) {
             this.owner = owner;
         }
 

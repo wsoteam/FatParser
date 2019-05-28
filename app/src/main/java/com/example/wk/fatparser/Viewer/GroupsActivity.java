@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.wk.fatparser.POJOs.AllOwner;
+import com.example.wk.fatparser.POJOsForConvert.CAllOwner;
 import com.example.wk.fatparser.R;
+import com.example.wk.fatparser.Singleton.DataHolder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,21 +25,21 @@ import com.google.firebase.database.ValueEventListener;
 public class GroupsActivity extends AppCompatActivity {
     RecyclerView rvGroupsList;
     String currentLetter = new String();
-    AllOwner allOwner = new AllOwner();
+    CAllOwner allOwner = new CAllOwner();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
-        currentLetter = getIntent().getStringExtra(Config.TAG_LETTER);
-        Log.e("LOL", currentLetter);
-        setTitle(currentLetter);
+        allOwner = DataHolder.getcGlobal().getLetters().get(getIntent().getIntExtra(Config.TAG_LETTER, 0));
+        Log.e("LOL", String.valueOf(allOwner.getName()));
         rvGroupsList = findViewById(R.id.rvGroupsList);
         rvGroupsList.setLayoutManager(new LinearLayoutManager(this));
-        updateUI();
+        rvGroupsList.setAdapter(new ItemAdapter());
+
     }
 
-    private void updateUI() {
+    /*private void updateUI() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(currentLetter);
         myRef.addValueEventListener(new ValueEventListener() {
@@ -53,7 +55,7 @@ public class GroupsActivity extends AppCompatActivity {
 
             }
         });
-    }
+    }*/
 
     private String getCountProducts(AllOwner allOwner) {
         int count = 0;
@@ -77,7 +79,7 @@ public class GroupsActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             startActivity(new Intent(GroupsActivity.this, DetailListActivity.class)
-                    .putExtra(Config.TAG_BREND, allOwner.getOwners().get(getAdapterPosition())));
+                    .putExtra(Config.TAG_BREND, getAdapterPosition()).putExtra(Config.TAG_LETTER, getIntent().getIntExtra(Config.TAG_LETTER, 0)));
         }
 
         public void bind(int position) {

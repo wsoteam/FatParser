@@ -1,8 +1,10 @@
 package com.example.wk.fatparser.POJOsForConvert;
 
+import com.orm.SugarRecord;
+
 import java.io.Serializable;
 
-public class CFood implements Serializable {
+public class CFood extends SugarRecord implements Serializable {
     private String name;
     private String brend;
     private String url;

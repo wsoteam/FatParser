@@ -22,21 +22,27 @@ import com.example.wk.fatparser.POJOsForConvert.CFood;
 import com.example.wk.fatparser.POJOsForConvert.CGlobal;
 import com.example.wk.fatparser.POJOsForConvert.COwner;
 import com.example.wk.fatparser.R;
+import com.example.wk.fatparser.Singleton.DataHolder;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.orm.query.Condition;
+import com.orm.query.Select;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +57,7 @@ public class EntryActivity extends AppCompatActivity {
             "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    Global global = new Global();
+    CGlobal global = new CGlobal();
     List<AllOwner> letters = new ArrayList<>();
 
     @Override
@@ -69,16 +75,13 @@ public class EntryActivity extends AppCompatActivity {
 
         btnFin.setVisibility(View.GONE);
         Log.e("LOL", String.valueOf(ABC.length));
-
-
+        DataHolder.getInstance();
+        DataHolder.setcGlobal(createCGlobal(readCAFile()));
 
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*global = createCGlobal(readCFile());
-                Log.e("LOL", "FIN");*/
-                global = createGlobal(readFile());
-                Log.e("LOL", "FIN");
+                view1G(DataHolder.getcGlobal());
             }
         });
 
@@ -92,15 +95,145 @@ public class EntryActivity extends AppCompatActivity {
 
     }
 
-    private void readNewBase(Global global) {
+    private boolean isEmptyDB() {
+        boolean isEmpty = true;
+        try {
+            CFood cFood = CFood.first(CFood.class);
+            if (cFood.getName() != null) {
+                isEmpty = false;
+            }
+        } catch (Exception e) {
+            isEmpty = true;
+        }
+        return isEmpty;
+    }
+
+    private void createNewDB() {
+        Log.e("LOL", "Start write");
+        try {
+            InputStream myInput = getApplicationContext().getAssets().open("sugar_example.db");
+            String outFileName = "/data/data/" + getPackageName() + "/databases/" + "sugar_example.db";
+            OutputStream outputStream = new FileOutputStream(outFileName);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = myInput.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            //Close the streams
+            outputStream.flush();
+            outputStream.close();
+            myInput.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("LOL", "fin write");
+    }
+    private void view1G(CGlobal global) {
         Log.e("LOL", "Start viewProc");
-        Global globalCur = global;
+        CGlobal globalCur = global;
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
             for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
                 for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
-                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    CFood food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    Log.e("LOL", food.toString());
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        //writeInCFile(getCJson(globalCur));
+    }
+
+    private void search(CGlobal global) {
+        Log.e("LOL", "Start viewProc");
+        CGlobal globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    CFood food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    double portion = food.getPortion();
+
+                    double kilojoules = food.getKilojoules() / portion;
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setKilojoules(kilojoules);
+
+                    double calories = food.getCalories() / portion;
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCalories(calories);
+
+                    double proteins = food.getProteins() / portion;
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setProteins(proteins);
+
+                    double carbohydrates = food.getCarbohydrates() / portion;
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCarbohydrates(carbohydrates);
+
+                    if (food.getSugar() != -1) {
+                        double sugar = food.getSugar() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSugar(sugar);
+                    }
+
+                    double fats = food.getFats() / portion;
+                    globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setFats(fats);
+
+                    if (food.getSaturatedFats() != -1) {
+                        double saturatedFats = food.getSaturatedFats() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSaturatedFats(saturatedFats);
+                    }
+
+                    if (food.getMonoUnSaturatedFats() != -1) {
+                        double monoUnSaturatedFats = food.getMonoUnSaturatedFats() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setMonoUnSaturatedFats(monoUnSaturatedFats);
+                    }
+
+                    if (food.getPolyUnSaturatedFats() != -1) {
+                        double polyUnSaturatedFats = food.getPolyUnSaturatedFats() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPolyUnSaturatedFats(polyUnSaturatedFats);
+                    }
+
+                    if (food.getCholesterol() != -1) {
+                        double cholesterol = food.getCholesterol() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCholesterol(cholesterol);
+                    }
+
+                    if (food.getCellulose() != -1) {
+                        double cellulose = food.getCellulose() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setCellulose(cellulose);
+                    }
+
+                    if (food.getSodium() != -1) {
+                        double sodium = food.getSodium() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setSodium(sodium);
+                    }
+
+                    if (food.getPottassium() != -1) {
+                        double pottassium = food.getPottassium() / portion;
+                        globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k).setPottassium(pottassium);
+                    }
+
+
+
+
+                }
+            }
+        }
+        Log.e("LOL", globalCur.getLetters().get(5).getName() + "   " + globalCur.getLetters().get(5).getOwners().get(5).getFoods().get(5).toString());
+        Log.e("LOL", "END viewProc" + count);
+        writeInCFile(getCJson(globalCur));
+    }
+
+    private void readNewBase(CGlobal global) {
+        Log.e("LOL", "Start viewProc");
+        CGlobal globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    CFood food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    food.save();
                     count += 1;
+                    Log.e("LOL", "save" + String.valueOf(count));
                 }
             }
         }
@@ -916,6 +1049,7 @@ public class EntryActivity extends AppCompatActivity {
         Log.e("LOL", json);
         writeInFile(json);*/
     }
+
     private void writeInCFile(String json) {
         try {
             // отрываем поток для записи
@@ -1044,7 +1178,7 @@ public class EntryActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            startActivity(new Intent(EntryActivity.this, GroupsActivity.class).putExtra(Config.TAG_LETTER, textView.getText().toString()));
+            startActivity(new Intent(EntryActivity.this, GroupsActivity.class).putExtra(Config.TAG_LETTER, getAdapterPosition()));
         }
 
         public void bind(String letter) {
