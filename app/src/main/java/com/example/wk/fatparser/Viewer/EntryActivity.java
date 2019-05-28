@@ -34,6 +34,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class EntryActivity extends AppCompatActivity {
             "Т", "У", "Ф", "Х", "Ц", "Ч", "Ш", "Щ", "Э", "Ю", "Я",
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
-    Global global = new Global();
+    CGlobal global = new CGlobal();
     List<AllOwner> letters = new ArrayList<>();
 
     @Override
@@ -61,16 +62,20 @@ public class EntryActivity extends AppCompatActivity {
         rvMainList = findViewById(R.id.rvMainList);
         rvMainList.setLayoutManager(new LinearLayoutManager(this));
         rvMainList.setAdapter(new ItemAdapter(ABC));
+        btnFin.setVisibility(View.GONE);
+        btnLoad.setVisibility(View.GONE);
 
         btnLoad = findViewById(R.id.btnLoad);
         btnFin = findViewById(R.id.btnFin);
         Log.e("LOL", String.valueOf(ABC.length));
 
+        global = createCGlobal(readCFile());
+
         btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                global = createGlobal(readFile());
-                atempt(global);
+                global = createCGlobal(readCFile());
+                readNewBase(global);
             }
         });
 
@@ -78,11 +83,26 @@ public class EntryActivity extends AppCompatActivity {
         btnFin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadToFB();
             }
         });
 
 
+    }
+
+    private void readNewBase(CGlobal global) {
+        Log.e("LOL", "Start viewProc");
+        CGlobal globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    CFood food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    count += 1;
+                }
+            }
+        }
+        Log.e("LOL", "END viewProc" + count);
+        //writeInFile(getJson(globalCur));
     }
 
     private void atempt(Global global) {
@@ -246,7 +266,7 @@ public class EntryActivity extends AppCompatActivity {
         Log.e("LOL", cGlobal.getLetters().get(11).getName() + "-- " + cGlobal.getLetters().get(11).getOwners().get(1).getName());
         Log.e("LOL", cGlobal.getLetters().get(50).getOwners().get(1).getFoods().get(3).toString());
         Log.e("LOL", "END checkAllFields" + count);
-        //writeInFile(getJson(globalCur));
+        writeInCFile(getCJson(cGlobal));
     }
 
 
@@ -778,6 +798,19 @@ public class EntryActivity extends AppCompatActivity {
         //writeInFile(getJson(globalCur));
     }
 
+    private CGlobal createCGlobal(String readFile) {
+        CGlobal global = new CGlobal();
+        Moshi moshi = new Moshi.Builder().build();
+        JsonAdapter<CGlobal> globalJsonAdapter = moshi.adapter(CGlobal.class);
+        try {
+            global = globalJsonAdapter.fromJson(readFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("LOL", "fuck read json");
+        }
+        return global;
+    }
+
     private Global createGlobal(String readFile) {
         Global global = new Global();
         Moshi moshi = new Moshi.Builder().build();
@@ -813,6 +846,13 @@ public class EntryActivity extends AppCompatActivity {
         //writeInFile(getJson(globalNew));
     }
 
+    private String getCJson(CGlobal globalNew) {
+        Moshi moshi = new Moshi.Builder().build();
+        JsonAdapter<CGlobal> globalJsonAdapter = moshi.adapter(CGlobal.class);
+        String json = globalJsonAdapter.toJson(globalNew);
+        return json;
+    }
+
     private String getJson(Global globalNew) {
         Moshi moshi = new Moshi.Builder().build();
         JsonAdapter<Global> globalJsonAdapter = moshi.adapter(Global.class);
@@ -820,7 +860,7 @@ public class EntryActivity extends AppCompatActivity {
         return json;
     }
 
-    private void loadToFB() {
+    /*private void loadToFB() {
         Log.e("LOL", "Start loading");
         global.setName("GlobRU");
         global.setLetters(letters);
@@ -831,7 +871,7 @@ public class EntryActivity extends AppCompatActivity {
         myRef.setValue(global);
 
         Log.e("LOL", "Fin loading");
-    }
+    }*/
 
     private void unionAllLetters() {
         final int max = ABC.length;
@@ -869,6 +909,22 @@ public class EntryActivity extends AppCompatActivity {
         Log.e("LOL", json);
         writeInFile(json);*/
     }
+    private void writeInCFile(String json) {
+        try {
+            // отрываем поток для записи
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+                    openFileOutput("FoodDBFin", MODE_PRIVATE)));
+            // пишем данные
+            bw.write(json);
+            // закрываем поток
+            bw.close();
+            Log.e("LOL", "Файл записан");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void writeInFile(String json) {
         try {
@@ -885,6 +941,46 @@ public class EntryActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String readCAFile() {
+        Log.e("LOL", "start read");
+        String json = "";
+        try {
+            InputStream inputStream = getAssets().open("FoodDBFin");
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+            json = new String(buffer, "UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("LOL", "fin read");
+        return json;
+    }
+
+    private String readCFile() {
+        Log.e("LOL", "start read");
+        String str = "";
+        String json = "";
+        try {
+            // открываем поток для чтения
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    openFileInput("FoodDBFin")));
+            // читаем содержимое
+            while ((str = br.readLine()) != null) {
+                json += str;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Log.e("LOL", "fin read");
+        return json;
     }
 
     private String readFile() {
