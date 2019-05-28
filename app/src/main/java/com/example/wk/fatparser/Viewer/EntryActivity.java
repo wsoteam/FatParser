@@ -66,7 +66,7 @@ public class EntryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 global = createGlobal(readFile());
-                replacePercents(global);
+                atempt(global);
             }
         });
 
@@ -81,7 +81,119 @@ public class EntryActivity extends AppCompatActivity {
 
     }
 
-    private void replacePercents(Global global) {
+    private void atempt(Global global) {
+        Global globalCur = global;
+        int count = 0;
+        for (int i = 0; i < globalCur.getLetters().size(); i++) {
+            for (int j = 0; j < globalCur.getLetters().get(i).getOwners().size(); j++) {
+                for (int k = 0; k < globalCur.getLetters().get(i).getOwners().get(j).getFoods().size(); k++) {
+                    Food food = globalCur.getLetters().get(i).getOwners().get(j).getFoods().get(k);
+                    /*double portion;
+                    if (food.getPortion().contains("мл")){
+                        portion = Double.parseDouble(food.getPortion().split("мл")[0]);
+                    }else{
+                        portion = Double.parseDouble(food.getPortion().split("г")[0]);
+                    }
+                    Log.e("LOL", String.valueOf(portion));*/
+
+                    /*double energy;
+                    energy = Double.parseDouble(food.getKilojoules());*/
+
+                    /*double kcal;
+                    kcal = Double.parseDouble(food.getCalories());*/
+
+                    /*double prot;
+                    prot = Double.parseDouble(food.getProteins());*/
+
+                    /*double carbo;
+                    carbo = Double.parseDouble(food.getCarbohydrates());*/
+
+                    /*double fats;
+                    fats = Double.parseDouble(food.getFats());*/
+
+                    /*double sugar;
+                    if (food.getSugar() != null) {
+                        sugar = Double.parseDouble(food.getSugar());
+                    } else {
+                        sugar = -1;
+                    }*/
+
+                    /*double sf;
+                    if (food.getSaturatedFats() != null) {
+                        sf = Double.parseDouble(food.getSaturatedFats());
+                    } else {
+                        sf = -1;
+                    }*/
+
+                    /*double musf;
+                    if (food.getMonoUnSaturatedFats() != null) {
+                        musf = Double.parseDouble(food.getMonoUnSaturatedFats());
+                    } else {
+                        musf = -1;
+                    }*/
+
+                    /*double pusf;
+                    if (food.getPolyUnSaturatedFats() != null) {
+                        pusf = Double.parseDouble(food.getPolyUnSaturatedFats());
+                    } else {
+                        pusf = -1;
+                    }*/
+
+                    /*double choleterol;
+                    if (food.getCholesterol() != null) {
+                        choleterol = Double.parseDouble(food.getCholesterol());
+                    } else {
+                        choleterol = -1;
+                    }*/
+
+                    /*double cell;
+                    if (food.getCellulose() != null) {
+                        cell = Double.parseDouble(food.getCellulose());
+                    } else {
+                        cell = -1;
+                    }*/
+
+                    /*double sod;
+                    if (food.getSodium() != null) {
+                        sod = Double.parseDouble(food.getSodium());
+                    } else {
+                        sod = -1;
+                    }*/
+
+                    /*double pot;
+                    if (food.getPottassium() != null) {
+                        pot = Double.parseDouble(food.getPottassium());
+                    } else {
+                        pot = -1;
+                    }*/
+
+                    /*int pc;
+                    pc = Integer.parseInt(food.getPercentCarbohydrates().split(" ")[1]);*/
+
+                    /*int pf;
+                    pf = Integer.parseInt(food.getPercentFats());*/
+
+                    /*int pp;
+                    pp = Integer.parseInt(food.getPercentProteins().split(" ")[1]);*/
+
+                    if (food.getPortion().contains("мл")){
+
+                    }else if (food.getPortion().contains("г")){
+
+                    }else {
+                        Log.e("LOL", food.getPortion());
+                    }
+
+
+                }
+            }
+        }
+        Log.e("LOL", "END checkAllFields" + count);
+        //writeInFile(getJson(globalCur));
+    }
+
+
+    /*private void replacePercents(Global global) {
         Global globalCur = global;
         int count = 0;
         for (int i = 0; i < globalCur.getLetters().size(); i++) {
@@ -118,7 +230,7 @@ public class EntryActivity extends AppCompatActivity {
         }
         Log.e("LOL", "END checkAllFields" + count);
         writeInFile(getJson(globalCur));
-    }
+    }*/
 
     private void replaceFats(Global global) {
         Global globalCur = global;
